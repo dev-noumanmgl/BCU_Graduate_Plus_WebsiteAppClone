@@ -9,16 +9,24 @@ class UploadedPostDetailsScreenView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: blackColor),
-          onPressed: () {},
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Container(
+              height: 44,
+              width: 44,
+              color: blackColor.withOpacity(.7),
+              child: Center(
+                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
+              ),
+            ),
+          ),
         ),
         titleSpacing: 0,
-        title: Row(
-          children: [Image.asset('assets/images/bcuLogo.png', height: 40.0)],
-        ),
+        title: Image.asset('assets/images/bcuLogo.png', height: 60.0),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,54 +34,18 @@ class UploadedPostDetailsScreenView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Post Header with Thumbnail and Author
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.asset(
-                      'assets/images/coverPic.png',
-                      width: double.infinity,
-                      height: 200.0,
-                      fit: BoxFit.cover,
-                    ),
+              Card(
+                elevation: 4,
+                margin: EdgeInsets.all(0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.asset(
+                    'assets/images/bcuCAS.png',
+                    width: double.infinity,
+                    height: 200.0,
+                    fit: BoxFit.cover,
                   ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                        color: blackColor.withOpacity(.7),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Posted by:",
-                            style: TextStyle(color: whiteColor),
-                          ),
-                          Text(
-                            'Pardeep Singh',
-                            style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               SizedBox(height: 16.0),
 

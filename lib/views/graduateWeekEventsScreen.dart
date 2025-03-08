@@ -9,15 +9,26 @@ class GraduateWeekEventsScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: blackColor),
-          onPressed: () {}, // Add navigation logic here
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Container(
+              height: 44,
+              width: 44,
+              color: blackColor.withOpacity(.7),
+              child: Center(
+                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
+              ),
+            ),
+          ),
         ),
         titleSpacing: 0,
-        title: Image.asset('assets/images/bcuLogo.png', height: 40.0),
+        title: Image.asset('assets/images/bcuLogo.png', height: 60.0),
       ),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(

@@ -9,17 +9,24 @@ class JiscDiscoveryToolScreenView extends StatelessWidget {
     return Scaffold(
       // AppBar section
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: blackColor),
-          onPressed: () {}, // TODO: Implement back navigation
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Container(
+              height: 44,
+              width: 44,
+              color: blackColor.withOpacity(.7),
+              child: Center(
+                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
+              ),
+            ),
+          ),
         ),
         titleSpacing: 0,
-        title: Image.asset(
-          'assets/images/bcuLogo.png',
-          height: 40.0,
-        ), // University Logo
+        title: Image.asset('assets/images/bcuLogo.png', height: 60.0),
       ),
 
       // Main Content Body

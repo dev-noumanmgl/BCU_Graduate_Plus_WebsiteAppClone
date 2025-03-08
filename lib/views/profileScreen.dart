@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/badgeDetailScreen.dart';
 import 'package:graduate_plus_app/views/uploadProfileScreen.dart';
 import 'package:graduate_plus_app/views/uploadedPostDetailsScreen.dart';
@@ -13,18 +14,24 @@ class ProfileScreenView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: blackColor),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Container(
+              height: 44,
+              width: 44,
+              color: blackColor.withOpacity(.7),
+              child: Center(
+                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
+              ),
+            ),
+          ),
         ),
         titleSpacing: 0,
-        title: Row(
-          children: [Image.asset('assets/images/bcuLogo.png', height: 40.0)],
-        ),
+        title: Image.asset('assets/images/bcuLogo.png', height: 60.0),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
@@ -55,7 +62,10 @@ class ProfileScreenView extends StatelessWidget {
             SizedBox(height: 10.0),
 
             // Badges Section
-            SectionHeader(title: 'Mr. Ismail Kilani'),
+            Text(
+              "Mr. Ismail Kilani",
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
             Text("ismailkilani@gmail.com"),
             SizedBox(height: 20.0),
 
@@ -85,46 +95,36 @@ class ProfileScreenView extends StatelessWidget {
 
             SizedBox(height: 20.0),
 
-            // Projects Section
-            SectionHeader(title: 'Projects'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'You have not created any project yet.',
-                      style: TextStyle(color: Colors.grey.shade600),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.add_circle_outline, color: Colors.black),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            SizedBox(height: 20.0),
-
-            // Badges Section
-            SectionHeader(title: 'Badges'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
                   children: [
+                    // Badges Section
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Badges",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "These badges are only given to those who complete the related activities.",
+                        style: textStyleLight(blackColor),
+                      ),
+                    ),
+                    SizedBox(height: 4),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -160,39 +160,68 @@ class ProfileScreenView extends StatelessWidget {
             ),
 
             SizedBox(height: 20.0),
-
-            // Posts Section
-            SectionHeader(title: 'Posts'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 4,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UploadedPostDetailsScreenView(),
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Posts",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
-                    child: ListViewCardWidget(
-                      imagePath: 'assets/images/bcuFB.png',
-                      title:
-                          index % 2 == 0
-                              ? 'Question sets and reports for students'
-                              : 'Give feedback - it only takes 2 minutes',
-                      likes: 213,
-                      isBookmark: true,
-                      isLiked: true,
-                      description:
-                          'Some of the most vivid and effective descriptive writing in music can be found in rap',
+                      ),
                     ),
-                  );
-                },
+                    SizedBox(height: 2),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "2 moments posted by Mr. Ismail Kilani since 2024",
+                        style: textStyleLight(blackColor),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 4,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        UploadedPostDetailsScreenView(),
+                              ),
+                            );
+                          },
+                          child: ListViewCardWidget(
+                            imagePath: 'assets/images/bcuFB.png',
+                            title:
+                                index % 2 == 0
+                                    ? 'Question sets and reports for students'
+                                    : 'Give feedback - it only takes 2 minutes',
+                            likes: 213,
+                            isBookmark: true,
+                            isLiked: true,
+                            description:
+                                'Some of the most vivid and effective descriptive writing in music can be found in rap',
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -241,23 +270,6 @@ class StatCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class SectionHeader extends StatelessWidget {
-  final String title;
-
-  const SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate_plus_app/utilities/appColors.dart';
 
 /// A stateless widget that represents the Badge Detail Screen.
 /// This screen displays a badge awarded to a user, along with details such as
@@ -13,23 +14,22 @@ class BadgeDetailScreenView extends StatelessWidget {
     return Scaffold(
       // AppBar with a transparent background and a back button
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: Colors.black),
-          onPressed: () {
-            // Navigate back to the previous screen
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(CupertinoIcons.share, color: Colors.black),
-            onPressed: () {
-              // Handle share action (to be implemented)
-            },
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipOval(
+            child: Container(
+              height: 44,
+              width: 44,
+              color: blackColor.withOpacity(.7),
+              child: Center(
+                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
+              ),
+            ),
           ),
-        ],
+        ),
       ),
       extendBodyBehindAppBar:
           true, // Allows the background image to extend behind the AppBar

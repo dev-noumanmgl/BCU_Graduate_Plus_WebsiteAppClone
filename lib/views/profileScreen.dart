@@ -97,44 +97,38 @@ class ProfileScreenView extends StatelessWidget {
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  children: [
-                    // Badges Section
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Badges",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
+              child: Card(
+                elevation: 4,
+                margin: EdgeInsets.all(0),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Column(
+                    children: [
+                      // Badges Section
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Badges",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 2),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "These badges are only given to those who complete the related activities.",
-                        style: textStyleLight(blackColor),
+                      SizedBox(height: 2),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "These badges are only given to those who complete the related activities.",
+                          style: textStyleLight(blackColor),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BadgeDetailScreenView(),
-                          ),
-                        );
-                      },
-                      child: GestureDetector(
+                      SizedBox(height: 4),
+                      GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -143,18 +137,36 @@ class ProfileScreenView extends StatelessWidget {
                             ),
                           );
                         },
-                        child: BadgeItem(
-                          title: 'Bronze Award - BCU Graduate+',
-                          imageName: "bcuBronzeAward",
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BadgeDetailScreenView(),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 2,
+                            margin: EdgeInsets.all(0),
+                            child: BadgeItem(
+                              title: 'Bronze Award - BCU Graduate+',
+                              imageName: "bcuBronzeAward",
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    BadgeItem(
-                      title: 'Silver Award - BCU Graduate+',
-                      imageName: "bcuSilverAward",
-                    ),
-                  ],
+                      SizedBox(height: 8.0),
+                      Card(
+                        elevation: 2,
+                        margin: EdgeInsets.all(0),
+                        child: BadgeItem(
+                          title: 'Silver Award - BCU Graduate+',
+                          imageName: "bcuSilverAward",
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -162,68 +174,73 @@ class ProfileScreenView extends StatelessWidget {
             SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Posts",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
+              child: Card(
+                elevation: 4,
+                margin: EdgeInsets.all(0),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Posts",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 2),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "2 moments posted by Mr. Ismail Kilani since 2024",
-                        style: textStyleLight(blackColor),
+                      SizedBox(height: 2),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "2 moments posted by Mr. Ismail Kilani since 2024",
+                          style: textStyleLight(blackColor),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 4,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        UploadedPostDetailsScreenView(),
-                              ),
-                            );
-                          },
-                          child: ListViewCardWidget(
-                            imagePath: 'assets/images/bcuFB.png',
-                            title:
-                                index % 2 == 0
-                                    ? 'Question sets and reports for students'
-                                    : 'Give feedback - it only takes 2 minutes',
-                            likes: 213,
-                            isBookmark: true,
-                            isLiked: true,
-                            description:
-                                'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                      SizedBox(height: 4),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 4,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          UploadedPostDetailsScreenView(),
+                                ),
+                              );
+                            },
+                            child: ListViewCardWidget(
+                              imagePath: 'assets/images/bcuFB.png',
+                              title:
+                                  index % 2 == 0
+                                      ? 'Question sets and reports for students'
+                                      : 'Give feedback - it only takes 2 minutes',
+                              likes: 213,
+                              isBookmark: true,
+                              isLiked: true,
+                              description:
+                                  'Some of the most vivid and effective descriptive writing in music can be found in rap',
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -286,7 +303,7 @@ class BadgeItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
         border: Border.all(color: blackColor.withOpacity(.1)),
       ),
       child: Row(

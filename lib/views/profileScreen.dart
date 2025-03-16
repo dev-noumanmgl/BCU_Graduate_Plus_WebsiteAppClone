@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate_plus_app/sharedPreference/sharedPreferenceHelper.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/badgeDetailScreen.dart';
@@ -7,7 +9,38 @@ import 'package:graduate_plus_app/views/uploadProfileScreen.dart';
 import 'package:graduate_plus_app/views/uploadedPostDetailsScreen.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 
-class ProfileScreenView extends StatelessWidget {
+class ProfileScreenView extends StatefulWidget {
+  @override
+  State<ProfileScreenView> createState() => _ProfileScreenViewState();
+}
+
+class _ProfileScreenViewState extends State<ProfileScreenView> {
+  String userName = "";
+  String userEmail = "";
+  String userId = "";
+  String profilePic = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  /// Load user details from SharedPreferences
+  Future<void> _loadUserData() async {
+    String? name = await SharedPrefrenceHelper().getDisplayName();
+    String? email = await SharedPrefrenceHelper().getUserEmail();
+    String? id = await SharedPrefrenceHelper().getUserId();
+    String? profilePic = await SharedPrefrenceHelper().getUserPic();
+
+    setState(() {
+      userName = name ?? "Guest";
+      userEmail = email ?? "No Email";
+      userId = id ?? "Unknown";
+      profilePic = profilePic ?? "No Pic";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -54,19 +87,23 @@ class ProfileScreenView extends StatelessWidget {
             CircleAvatar(
               radius: 60.0,
               backgroundColor: Colors.white,
-              child: Image.asset(
-                'assets/images/profile.png',
+              child: CachedNetworkImage(
+                imageUrl: profilePic,
                 fit: BoxFit.cover,
+                progressIndicatorBuilder:
+                    (context, url, downloadProgress) =>
+                        CupertinoActivityIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
             SizedBox(height: 10.0),
 
             // Badges Section
             Text(
-              "Mr. Ismail Kilani",
+              userName,
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            Text("ismailkilani@gmail.com"),
+            Text(userEmail),
             SizedBox(height: 20.0),
 
             // Stats

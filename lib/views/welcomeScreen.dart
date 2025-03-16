@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart'; // Importing Flutter Material package for UI components
 import 'package:graduate_plus_app/utilities/appColors.dart'; // Importing custom app colors
 import 'package:graduate_plus_app/utilities/commonButton.dart'; // Importing reusable button widget
-import 'package:graduate_plus_app/views/signInScreen.dart'; // Importing Sign-In screen
+import 'package:graduate_plus_app/views/signInScreen.dart';
+import 'package:graduate_plus_app/views/signUpScreen.dart'; // Importing Sign-In screen
 
 // Stateless widget for the Welcome Screen
 class WelcomeScreenView extends StatelessWidget {

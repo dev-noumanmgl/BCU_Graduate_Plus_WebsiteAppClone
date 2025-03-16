@@ -8,12 +8,13 @@ class CustomTextField extends StatelessWidget {
 
   // Placeholder text for the input field
   final String hintText;
+  final String? errorText;
 
   // Optional prefix icon for the input field
   final IconData? prefixIcon;
 
   // Determines whether the text should be obscured (e.g., for passwords)
-  final bool obscureText;
+  final bool obscureText, isEmail;
 
   // Validator function for form validation
   final String? Function(String?)? validator;
@@ -23,6 +24,8 @@ class CustomTextField extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.hintText,
+    required this.errorText,
+    required this.isEmail,
     this.prefixIcon,
     this.obscureText = false, // Default value set to false (not obscured)
     this.validator,
@@ -42,12 +45,14 @@ class CustomTextField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0), // Rounded borders
         ),
+        errorText: errorText, // Display error message if validation fails
         filled: true, // Enables background color
         fillColor: whiteColor.withOpacity(
           .8,
         ), // Slightly transparent white background
       ),
       validator: validator, // Uses the provided validator function (if any)
+      keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
     );
   }
 }

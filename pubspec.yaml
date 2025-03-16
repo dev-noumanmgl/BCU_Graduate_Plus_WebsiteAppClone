@@ -36,8 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^1.1.2
   video_player: ^2.9.3
-  flutter_colorpicker: ^1.1.0
-  fluttertoast: ^8.2.10
+  firebase_database: ^11.3.4
+  firebase_storage: ^12.4.4
+  firebase_auth: ^5.5.1
+  firebase_core: ^3.12.1
+  intl: ^0.20.2
+  flutter_smart_dialog: ^4.9.8+7
+  shared_preferences: ^2.5.2
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

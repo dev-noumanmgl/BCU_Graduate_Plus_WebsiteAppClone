@@ -80,7 +80,10 @@ class ListViewCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   // Bookmark Icon
-                  Icon(isBookmark ? Icons.bookmark : Icons.bookmark_border),
+                  Icon(
+                    isBookmark ? Icons.bookmark : Icons.bookmark_border,
+                    color: appThemeColor,
+                  ),
                   Spacer(), // Pushes like section to the bottom
                   // Like Icon and Count
                   Row(
@@ -89,11 +92,12 @@ class ListViewCardWidget extends StatelessWidget {
                         isLiked
                             ? CupertinoIcons.heart_fill
                             : CupertinoIcons.heart,
+                        color: appThemeColor,
                       ),
                       SizedBox(width: 4),
                       Text(
                         likes.toString(),
-                        style: TextStyle(fontSize: 14, color: blackColor),
+                        style: TextStyle(fontSize: 14, color: appThemeColor),
                       ),
                     ],
                   ),

@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:graduate_plus_app/firebaseDatabase/getStudentInfo.dart';
+import 'package:graduate_plus_app/sharedPreference/sharedPreferenceHelper.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/commonButton.dart';
 import 'package:graduate_plus_app/utilities/customTextField.dart';
+import 'package:graduate_plus_app/utilities/models/studentPrsnlInfoModel.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/homePageScreen.dart';
 import 'package:graduate_plus_app/views/signUpScreen.dart';
@@ -21,6 +26,115 @@ class _SignInScreenViewState extends State<SignInScreenView> {
       TextEditingController(); // Controller for email input
   TextEditingController passwordController =
       TextEditingController(); // Controller for password input
+
+  // Error messages for form validation
+  String? emailError, passwordError;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(() {
+      if (emailError != null && emailController.text.isNotEmpty) {
+        setState(() {
+          emailError = null;
+        });
+      }
+    });
+    passwordController.addListener(() {
+      if (passwordError != null && passwordController.text.isNotEmpty) {
+        setState(() {
+          passwordError = null;
+        });
+      }
+    });
+  }
+
+  Future<void> signIn() async {
+    setState(() {
+      emailError =
+          emailController.text.trim().isEmpty
+              ? "Required field"
+              : !RegExp(
+                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+              ).hasMatch(emailController.text.trim())
+              ? "Enter a valid email"
+              : null;
+      passwordError =
+          passwordController.text.trim().isEmpty
+              ? "Required field"
+              : passwordController.text.trim().length < 6
+              ? "Password must be at least 6 characters"
+              : null;
+    });
+
+    if (_formKey.currentState!.validate() &&
+        emailError == null &&
+        passwordError == null) {
+      try {
+        SmartDialog.showLoading(msg: "Please wait...");
+        final UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim(),
+            );
+        if (userCredential != null) {
+          if (userCredential.user!.emailVerified) {
+            StudentPrsnlInfoModel? userInfo =
+                await getUserPersonalInfoFromDatabase(
+                  userCredential.user!.uid.toString().trim(),
+                );
+            if (userInfo != null) {
+              SharedPrefrenceHelper().saveDisplayName(
+                userInfo.userFullName.toString().trim(),
+              );
+              SharedPrefrenceHelper().saveUserEmail(
+                userInfo.userEmail.toString().trim(),
+              );
+              SharedPrefrenceHelper().saveUserId(
+                userCredential.user!.uid.toString().trim(),
+              );
+              SharedPrefrenceHelper().saveUserPic(
+                userInfo.profileImage.toString().trim(),
+              );
+            }
+
+            SmartDialog.dismiss();
+            // ignore: use_build_context_synchronously
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePageScreenView()),
+            );
+          } else {
+            SmartDialog.dismiss();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Please verify your email before login")),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Email or password is wrong")));
+        }
+      } on FirebaseAuthException catch (e) {
+        SmartDialog.dismiss();
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Account not exist for that email")),
+          );
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Email or password is wrong")));
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Email or password is wrong")));
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +197,8 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                           controller: emailController,
                           hintText: 'Email...',
                           prefixIcon: Icons.mail_outline,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            } else if (!RegExp(
-                              r'^[^@\s]+@[^@\s]+\.[^@\s]+\$',
-                            ).hasMatch(value)) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
+                          errorText: emailError,
+                          isEmail: true,
                         ),
                         SizedBox(height: 20.0),
 
@@ -107,14 +213,8 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                           hintText: '********',
                           prefixIcon: Icons.lock_outline,
                           obscureText: true, // Hide password
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            } else if (value.length < 6) {
-                              return 'Password must be at least 6 characters long';
-                            }
-                            return null;
-                          },
+                          errorText: passwordError,
+                          isEmail: false,
                         ),
 
                         // Forgot Password Button
@@ -155,13 +255,7 @@ class _SignInScreenViewState extends State<SignInScreenView> {
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePageScreenView(),
-                        ),
-                      );
-                      // TODO: Implement authentication logic
+                      signIn();
                     },
                     child: commonButton(context: context, label: "Login"),
                   ),

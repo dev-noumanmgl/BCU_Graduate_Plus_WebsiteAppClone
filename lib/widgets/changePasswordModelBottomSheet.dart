@@ -60,16 +60,8 @@ class _ChangePasswordModelBottomSheetState
               controller: emailController,
               hintText: 'Enter your email',
               prefixIcon: Icons.mail_outline,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
-                } else if (!RegExp(
-                  r'^[^@\s]+@[^@\s]+\.[^@\s]+\$',
-                ).hasMatch(value)) {
-                  return 'Please enter a valid email';
-                }
-                return null;
-              },
+              errorText: '',
+              isEmail: true,
             ),
             SizedBox(height: 40),
 

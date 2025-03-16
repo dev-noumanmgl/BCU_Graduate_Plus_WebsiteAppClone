@@ -87,7 +87,7 @@ class BadgeDetailScreenView extends StatelessWidget {
 
                   // User Name
                   Text(
-                    'Pardeep Singh',
+                    'Ismail Kilani',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,

@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:graduate_plus_app/utilities/models/studentPrsnlInfoModel.dart';
+import 'package:graduate_plus_app/views/signInScreen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/commonButton.dart';
 import 'package:graduate_plus_app/utilities/customTextField.dart';
+import 'package:intl/intl.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
-import 'package:graduate_plus_app/views/signInScreen.dart';
 import 'package:graduate_plus_app/widgets/chooseProfileImageBottomSheetWidget.dart';
-import 'package:image_picker/image_picker.dart';
 
 class SignUpScreenView extends StatefulWidget {
   const SignUpScreenView({Key? key}) : super(key: key);
@@ -21,6 +27,34 @@ class _SignUpScreenViewState extends State<SignUpScreenView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  // Error messages for form validation
+  String? emailError, passwordError, nameError;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(() {
+      if (nameError != null && nameController.text.isNotEmpty) {
+        setState(() {
+          nameError = null;
+        });
+      }
+    });
+    emailController.addListener(() {
+      if (emailError != null && emailController.text.isNotEmpty) {
+        setState(() {
+          emailError = null;
+        });
+      }
+    });
+    passwordController.addListener(() {
+      if (passwordError != null && passwordController.text.isNotEmpty) {
+        setState(() {
+          passwordError = null;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,193 +92,126 @@ class _SignUpScreenViewState extends State<SignUpScreenView> {
         child: Column(
           children: [
             Expanded(
-              child: NotificationListener<OverscrollIndicatorNotification>(
-                onNotification: (notification) {
-                  notification.disallowIndicator();
-                  return true;
-                },
-                child: SingleChildScrollView(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: 120,
-                              width: 120,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(.9),
-                                  width: 1,
-                                ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final result = await showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
+                          ),
+                          builder:
+                              (context) => chooseProfileImagesBottomSheet(
+                                context: context,
                               ),
-                              child: ClipOval(
-                                child:
-                                    (selectedImage != null)
-                                        ? Image.file(
-                                          selectedImage!,
-                                          fit: BoxFit.cover,
-                                        )
-                                        : Container(
-                                          color: appThemeColor,
-                                          child: const Icon(
-                                            Icons.person,
-                                            size: 60,
-                                          ),
-                                        ),
+                        );
+                        if (result != null) chooseImage(result);
+                      },
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundColor: appThemeColor,
+                            backgroundImage:
+                                selectedImage != null
+                                    ? FileImage(selectedImage!)
+                                    : null,
+                            child:
+                                selectedImage == null
+                                    ? Icon(Icons.person, size: 60)
+                                    : null,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.black,
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
                               ),
                             ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: InkWell(
-                                onTap: () async {
-                                  final result = await showModalBottomSheet(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(12),
-                                        topLeft: Radius.circular(12),
-                                      ),
-                                    ),
-                                    context: context,
-                                    builder: (context) {
-                                      return chooseProfileImagesBottomSheet(
-                                        context: context,
-                                      );
-                                    },
-                                  );
-                                  if (result != null) {
-                                    chooseImage(result, context);
-                                  }
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(100),
-                                  ),
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    color: Colors.black,
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.camera_alt_rounded,
-                                        size: 24,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        SizedBox(height: 40.0),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text("Full Name", style: textStyleRegular()),
-                        ),
-                        const SizedBox(height: 8),
-
-                        // Email TextField
-                        CustomTextField(
-                          controller: nameController,
-                          hintText: 'Name...',
-                          prefixIcon: Icons.mail_outline,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            } else if (!RegExp(
-                              r'^[^@\s]+@[^@\s]+\.[^@\s]+\$',
-                            ).hasMatch(value)) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20.0),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text("Email", style: textStyleRegular()),
-                        ),
-                        const SizedBox(height: 8),
-
-                        // Email TextField
-                        CustomTextField(
-                          controller: emailController,
-                          hintText: 'Email...',
-                          prefixIcon: Icons.mail_outline,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            } else if (!RegExp(
-                              r'^[^@\s]+@[^@\s]+\.[^@\s]+\$',
-                            ).hasMatch(value)) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20.0),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text("Password", style: textStyleRegular()),
-                        ),
-                        const SizedBox(height: 8),
-                        // Password TextField
-                        CustomTextField(
-                          controller: passwordController,
-                          hintText: '********',
-                          prefixIcon: Icons.lock_outline,
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            } else if (value.length < 6) {
-                              return 'Password must be at least 6 characters long';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 20),
+
+                    // Error disappears when user types
+                    CustomTextField(
+                      controller: nameController,
+                      hintText: 'Full Name',
+                      prefixIcon: Icons.person,
+                      errorText: nameError,
+                      isEmail: false,
+                    ),
+                    SizedBox(height: 20),
+
+                    CustomTextField(
+                      controller: emailController,
+                      hintText: 'Email',
+                      prefixIcon: Icons.mail_outline,
+                      errorText: emailError,
+                      isEmail: false,
+                    ),
+                    SizedBox(height: 20),
+
+                    CustomTextField(
+                      controller: passwordController,
+                      hintText: 'Password',
+                      prefixIcon: Icons.lock_outline,
+                      obscureText: true,
+                      errorText: passwordError,
+                      isEmail: false,
+                    ),
+                  ],
                 ),
               ),
             ),
-
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: GestureDetector(
-                child: commonButton(context: context, label: "Sign Up"),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Do you have already account? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignInScreenView(),
-                        ),
-                      );
-                    },
-                    child: Text("Sign In", style: textStyleBold(appThemeColor)),
+            Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () => signUp(),
+                    child: commonButton(context: context, label: "Sign Up"),
                   ),
-                ],
-              ),
+                ),
+
+                // Sign Up Navigation
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Already have an account? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInScreenView(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: textStyleBold(appThemeColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -252,21 +219,130 @@ class _SignUpScreenViewState extends State<SignUpScreenView> {
     );
   }
 
-  Future<File?> chooseImage(type, context) async {
-    var image;
+  Future<void> signUp() async {
+    setState(() {
+      nameError = nameController.text.trim().isEmpty ? "Required field" : null;
+      emailError =
+          emailController.text.trim().isEmpty
+              ? "Required field"
+              : !RegExp(
+                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+              ).hasMatch(emailController.text.trim())
+              ? "Enter a valid email"
+              : null;
+      passwordError =
+          passwordController.text.trim().isEmpty
+              ? "Required field"
+              : passwordController.text.trim().length < 6
+              ? "Password must be at least 6 characters"
+              : null;
+    });
+
+    if (_formKey.currentState!.validate() &&
+        nameError == null &&
+        emailError == null &&
+        passwordError == null) {
+      if (selectedImage != null) {
+        SmartDialog.showLoading(msg: "Please wait...");
+
+        final FirebaseAuth _auth = FirebaseAuth.instance;
+
+        try {
+          UserCredential userCredential = await _auth
+              .createUserWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+              );
+          if (userCredential.user != null) {
+            String uid = userCredential.user!.uid;
+
+            await userCredential.user!.sendEmailVerification();
+            String imageUrl = "";
+            if (selectedImage != null) {
+              final storageRef = FirebaseStorage.instance.ref().child(
+                'profile_images/${userCredential.user!.uid}.jpg',
+              );
+              await storageRef.putFile(selectedImage!);
+              imageUrl = await storageRef.getDownloadURL();
+            }
+
+            String formattedDate = DateFormat(
+              'd/M/yyyy',
+            ).format(DateTime.now());
+
+            StudentPrsnlInfoModel userPersonalInfoModel = StudentPrsnlInfoModel(
+              profileImage: imageUrl,
+              userFullName: nameController.text.trim(),
+              userEmail: emailController.text.trim(),
+              userId: uid,
+              userPassword: passwordController.text.trim(),
+              accountCreatedDate: formattedDate,
+            );
+
+            await FirebaseDatabase.instance
+                .ref("students/${userCredential.user!.uid}")
+                .set(userPersonalInfoModel.toJson())
+                .whenComplete(() {
+                  SmartDialog.dismiss();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Graduate + App's team send you email for verification. Pleas check it for next proceed!",
+                      ),
+                    ),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignInScreenView()),
+                  );
+                });
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+        } finally {
+          SmartDialog.dismiss();
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("First pic profile image to continue registration"),
+          ),
+        );
+      }
+    }
+  }
+
+  void _clearForm() {
+    nameController.clear();
+    emailController.clear();
+    passwordController.clear();
+
+    setState(() {
+      nameError = null;
+      emailError = null;
+      passwordError = null;
+    });
+  }
+
+  Future<void> chooseImage(String type) async {
+    XFile? image;
     if (type == "camera") {
       image = await ImagePicker().pickImage(source: ImageSource.camera);
     } else {
       image = await ImagePicker().pickImage(source: ImageSource.gallery);
     }
-
-    File? img = image != null ? File(image.path) : null;
-    if (img != null) {
-      setState(() {
-        selectedImage = img;
-      });
-    } else {
-      print("Image selection canceled");
+    if (image != null) {
+      setState(() => selectedImage = File(image!.path));
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

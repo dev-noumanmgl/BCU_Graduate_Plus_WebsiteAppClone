@@ -31,13 +31,13 @@ class _ProfileScreenViewState extends State<ProfileScreenView> {
     String? name = await SharedPrefrenceHelper().getDisplayName();
     String? email = await SharedPrefrenceHelper().getUserEmail();
     String? id = await SharedPrefrenceHelper().getUserId();
-    String? profilePic = await SharedPrefrenceHelper().getUserPic();
+    String? profile = await SharedPrefrenceHelper().getUserPic();
 
     setState(() {
       userName = name ?? "Guest";
       userEmail = email ?? "No Email";
       userId = id ?? "Unknown";
-      profilePic = profilePic ?? "No Pic";
+      profilePic = profile ?? "No Pic";
     });
   }
 
@@ -84,10 +84,11 @@ class _ProfileScreenViewState extends State<ProfileScreenView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Profile Header
-            CircleAvatar(
-              radius: 60.0,
-              backgroundColor: Colors.white,
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(100)),
               child: CachedNetworkImage(
+                height: 120,
+                width: 120,
                 imageUrl: profilePic,
                 fit: BoxFit.cover,
                 progressIndicatorBuilder:

@@ -5,6 +5,7 @@ import 'package:graduate_plus_app/views/beyondGraduatePlusScreen.dart';
 import 'package:graduate_plus_app/views/embeddedCoursesScreen.dart';
 import 'package:graduate_plus_app/views/employabilityFrameworkScreen.dart';
 import 'package:graduate_plus_app/views/eventsScreen.dart';
+import 'package:graduate_plus_app/views/gradcrackerJobs/personalInfoScreen.dart';
 import 'package:graduate_plus_app/views/graduateWeekEventsScreen.dart';
 import 'package:graduate_plus_app/views/graduateWeekVideosScreen.dart';
 import 'package:graduate_plus_app/views/jiscDiscoveryToolScreen.dart';
@@ -19,6 +20,7 @@ final List<DrawerItem> mainDrawerItems = [
   DrawerItem(title: "Events", icon: Icons.event),
   DrawerItem(title: "New Posts", icon: Icons.post_add),
   DrawerItem(title: "Messages", icon: Icons.message),
+  DrawerItem(title: "Jobs", icon: Icons.join_full_sharp),
   DrawerItem(title: "My Account", icon: Icons.account_circle),
   DrawerItem(title: "Sign Out", icon: Icons.logout),
 ];
@@ -249,6 +251,14 @@ Widget DrawerViewWidget(BuildContext context) {
                         context,
                         MaterialPageRoute(
                           builder: (context) => MessagesScreenView(),
+                        ),
+                      );
+                    } else if (item.title == "Jobs") {
+                      // Navigate to Messages screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PersonalInfoScreenView(),
                         ),
                       );
                     }

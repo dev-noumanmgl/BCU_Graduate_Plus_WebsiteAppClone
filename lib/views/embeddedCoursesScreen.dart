@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart'; // Importing custom colors
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/views/courseDetailsScreenView.dart';
+import 'package:graduate_plus_app/widgets/coursesListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart'; // Importing a reusable ListView card widget
 
 /// A stateless widget representing the Embedded Courses screen.
@@ -72,36 +74,12 @@ class EmbeddedCoursesScreenView extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
 
-            // List of award activities using ListView.builder
-            ListView.builder(
-              shrinkWrap: true, // Ensures it fits within the scroll view
-              itemCount: 4, // Number of items
-              physics:
-                  NeverScrollableScrollPhysics(), // Disables inner scrolling
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Coursedetailsscreenview(),
-                      ),
-                    );
-                  },
-                  child: ListViewCardWidget(
-                    imagePath: 'assets/images/bcuFB.png',
-                    title:
-                        index % 2 == 0
-                            ? 'Question sets and reports for students'
-                            : 'Give feedback - it only takes 2 minutes',
-                    likes: 213, // Static like count
-                    isBookmark: true, // Pre-set bookmark status
-                    isLiked: true, // Pre-set like status
-                    description:
-                        'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                  ),
-                );
-              },
+            CoursesListViewCardWidget(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'course',
+              postedDate: '',
+              futureCourses: DataService.fetchCourses(),
             ),
             SizedBox(height: 24.0),
 
@@ -116,26 +94,12 @@ class EmbeddedCoursesScreenView extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
 
-            // List of suggested playlist items using ListView.builder
-            ListView.builder(
-              shrinkWrap: true, // Fits within the scroll view
-              itemCount: 4, // Number of items
-              physics:
-                  NeverScrollableScrollPhysics(), // Prevents nested scrolling
-              itemBuilder: (context, index) {
-                return ListViewCardWidget(
-                  imagePath: 'assets/images/bcuFB.png',
-                  title:
-                      index % 2 == 0
-                          ? 'Question sets and reports for students'
-                          : 'Give feedback - it only takes 2 minutes',
-                  likes: 213, // Static like count
-                  isBookmark: true, // Pre-set bookmark status
-                  isLiked: true, // Pre-set like status
-                  description:
-                      'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                );
-              },
+            CoursesListViewCardWidget(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'course',
+              postedDate: '',
+              futureCourses: DataService.fetchCourses(),
             ),
           ],
         ),

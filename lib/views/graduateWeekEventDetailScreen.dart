@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/models/eventsModel.dart';
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/graduateEventDetailScreenView.dart';
+import 'package:graduate_plus_app/widgets/eventsListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 
 class GraduateWeekEventDetailScreenView extends StatelessWidget {
+  final EventsModel event;
+  const GraduateWeekEventDetailScreenView({super.key, required this.event});
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -39,7 +44,7 @@ class GraduateWeekEventDetailScreenView extends StatelessWidget {
           children: [
             // Event Title
             Text(
-              'Building and Construction Management',
+              event.title,
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.0),
@@ -70,7 +75,7 @@ class GraduateWeekEventDetailScreenView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text("BCU", style: textStyleBold(blackColor)),
+                    Text(event.publisherName, style: textStyleBold(blackColor)),
                   ],
                 ),
 
@@ -80,15 +85,15 @@ class GraduateWeekEventDetailScreenView extends StatelessWidget {
                     Icon(
                       CupertinoIcons.heart_fill,
                       size: 22.0,
-                      color: appThemeColor,
+                      color: blackColor,
                     ),
                     SizedBox(width: 4.0),
-                    Text('592'),
+                    Text(event.like.toString()),
                     SizedBox(width: 16.0),
                     Icon(
                       CupertinoIcons.bookmark,
                       size: 18.0,
-                      color: appThemeColor,
+                      color: blackColor,
                     ),
                     SizedBox(width: 16.0),
                     Icon(
@@ -111,7 +116,7 @@ class GraduateWeekEventDetailScreenView extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             Text(
-              "If you haven’t come across the programme, this is an ideal opportunity to engage with BCU’s extra and co-curricular awards. Academics, across all courses, will be encouraging you to engage with the activities we have on offer that cover the gamut of experiences such as: developing your academic skills with courses offered by the Centre for Academic Success with sessions on academic writing, critical thinking, referencing and more; improving your employability with sessions offered by the careers team that will help you to know how to talk to employers, or explore volunteering and mentoring opportunities.",
+              event.description.join("\n\n"),
               style: TextStyle(fontSize: 16.0, color: Colors.black87),
             ),
             SizedBox(height: 16.0),
@@ -145,38 +150,27 @@ class GraduateWeekEventDetailScreenView extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               // List of activities for the day
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: 4, // TODO: Update dynamically based on actual data
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Graduateeventdetailscreenview(),
-                        ),
-                      );
-                    },
-                    child: ListViewCardWidget(
-                      imagePath: 'assets/images/bcuFB.png',
-                      title:
-                          index % 2 == 0
-                              ? 'Question sets and reports for students'
-                              : 'Give feedback - it only takes 2 minutes',
-                      likes: 213,
-                      isBookmark: true,
-                      isLiked: true,
-                      description:
-                          'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                    ),
-                  );
-                },
+              EventsListViewCardWidgets(
+                hasLogo: true,
+                postedBy: '',
+                nextScreen: 'detail',
+                postedDate: '',
+                events: _fetchEventsForDay(
+                  day,
+                ), // Pass Future<List<EventsModel>>
               ),
             ],
           ),
         )
+        .toList();
+  }
+
+  // Function to return the future list filtered for a specific day
+  Future<List<EventsModel>> _fetchEventsForDay(String day) async {
+    List<EventsModel> allEvents = await DataService.fetchWeekEvents();
+
+    return allEvents
+        .where((event) => event.id.toLowerCase() == day.toLowerCase())
         .toList();
   }
 }

@@ -1,13 +1,17 @@
 // Import necessary Flutter packages for UI components
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart'; // Provides iOS-style widgets
 import 'package:flutter/material.dart'; // Core Flutter UI components
 
 // Import custom utilities for colors, text styles, and widgets
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/models/courseModel.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart'; // Custom widget for displaying grid items
 
 // Main screen for the RBS Discovery Tool, which presents a categorized list of digital resources
 class Coursefeedbackdetailscreenview extends StatelessWidget {
+  final CoursesModel courses;
+  const Coursefeedbackdetailscreenview({super.key, required this.courses});
   @override
   Widget build(BuildContext context) {
     final size =
@@ -54,17 +58,22 @@ class Coursefeedbackdetailscreenview extends StatelessWidget {
                   borderRadius: BorderRadius.circular(
                     12.0,
                   ), // Rounded corners for aesthetics
-                  child: Image.asset(
-                    'assets/images/bcuBanner.png', // Replace with header image
+                  child: CachedNetworkImage(
+                    imageUrl: courses.image,
+                    height: 79,
                     width: double.infinity,
-                    fit: BoxFit.cover, // Ensures the image covers the width
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            CupertinoActivityIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
               ),
               SizedBox(height: 16.0), // Add spacing below the banner
               // Title Section - Displays the main heading of the page
               Text(
-                '2. Attend an industry panel event.', // Page title
+                courses.title, // Page title
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8), // Space between title and profile section
@@ -100,7 +109,7 @@ class Coursefeedbackdetailscreenview extends StatelessWidget {
                       ),
                       SizedBox(width: 8), // Space between image and text
                       Text(
-                        "Jisc", // Author/Organization name
+                        courses.publiserName, // Author/Organization name
                         style: textStyleBold(blackColor),
                       ),
                     ],
@@ -114,10 +123,10 @@ class Coursefeedbackdetailscreenview extends StatelessWidget {
                       Icon(
                         CupertinoIcons.heart_fill,
                         size: 22.0,
-                        color: appThemeColor,
+                        color: blackColor,
                       ), // Like icon
                       SizedBox(width: 4.0),
-                      Text('592'), // Like count
+                      Text(courses.like.toString()), // Like count
 
                       SizedBox(width: 16.0),
                       Icon(
@@ -132,7 +141,7 @@ class Coursefeedbackdetailscreenview extends StatelessWidget {
               SizedBox(height: 16.0), // Space below the profile section
               // Description Section - Provides an overview of the available resources
               Text(
-                'During the week the alumni and guest speakers will share there experiences of getting into the industry. Attend one of these events and reflect on what you have learned.',
+                courses.description.join("\n\n"),
                 style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
               ),
               SizedBox(height: 16.0), // Space before listing sections

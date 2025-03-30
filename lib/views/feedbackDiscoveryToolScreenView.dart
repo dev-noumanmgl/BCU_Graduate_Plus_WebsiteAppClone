@@ -115,7 +115,7 @@ class FeedbackDiscoveryToolScreenView extends StatelessWidget {
                       Icon(
                         CupertinoIcons.heart_fill,
                         size: 22.0,
-                        color: appThemeColor,
+                        color: blackColor,
                       ), // Like icon
                       SizedBox(width: 4.0),
                       Text('592'), // Like count
@@ -124,7 +124,7 @@ class FeedbackDiscoveryToolScreenView extends StatelessWidget {
                       Icon(
                         CupertinoIcons.bookmark_fill,
                         size: 18.0,
-                        color: appThemeColor,
+                        color: blackColor,
                       ), // Bookmark icon
 
                       SizedBox(width: 16.0),

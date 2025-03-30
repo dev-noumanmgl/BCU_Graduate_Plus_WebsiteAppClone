@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/views/eventsDetailScreen.dart';
+import 'package:graduate_plus_app/widgets/coursesListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/drawerViewWidget.dart';
+import 'package:graduate_plus_app/widgets/eventsListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -155,28 +158,6 @@ class _HomePageScreenViewState extends State<HomePageScreenView> {
               fit: BoxFit.cover,
             ),
 
-            SizedBox(height: 16),
-            // Cards Section: Displays awards in a grid format
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 4,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ListViewCardWidget(
-                  imagePath: 'assets/images/bcuFB.png',
-                  title:
-                      index % 2 == 0
-                          ? 'Question sets and reports for students'
-                          : 'Give feedback - it only takes 2 minutes',
-                  likes: 213,
-                  isBookmark: true,
-                  isLiked: true,
-                  description:
-                      'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                );
-              },
-            ),
-
             SizedBox(height: 16.0),
 
             // Other Projects Section
@@ -189,25 +170,20 @@ class _HomePageScreenViewState extends State<HomePageScreenView> {
             ),
             SizedBox(height: 8.0),
 
-            // Grid for displaying other projects
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 3,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ListViewCardWidget(
-                  imagePath: 'assets/images/bcuFB.png',
-                  title:
-                      index % 2 == 0
-                          ? 'Question sets and reports for students'
-                          : 'Give feedback - it only takes 2 minutes',
-                  likes: 213,
-                  isBookmark: true,
-                  isLiked: true,
-                  description:
-                      'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                );
-              },
+            EventsListViewCardWidgets(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'detail',
+              postedDate: '',
+              events: DataService.fetchGraduateEvents(),
+            ),
+
+            CoursesListViewCardWidget(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'detail',
+              postedDate: '',
+              futureCourses: DataService.fetchCourses(),
             ),
           ],
         ),

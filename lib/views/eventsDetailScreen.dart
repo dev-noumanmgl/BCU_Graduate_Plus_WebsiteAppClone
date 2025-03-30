@@ -92,7 +92,7 @@ class EventsDetailScreenView extends StatelessWidget {
                     Icon(
                       CupertinoIcons.heart_fill,
                       size: 22.0,
-                      color: appThemeColor,
+                      color: blackColor,
                     ),
                     SizedBox(width: 4.0),
                     Text('592'),
@@ -100,7 +100,7 @@ class EventsDetailScreenView extends StatelessWidget {
                     Icon(
                       CupertinoIcons.bookmark,
                       size: 18.0,
-                      color: appThemeColor,
+                      color: blackColor,
                     ),
                     SizedBox(width: 16.0),
                     Icon(

@@ -104,12 +104,12 @@ class ContentListView extends StatelessWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Graduateeventdetailscreenview(),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => Graduateeventdetailscreenview(),
+                //   ),
+                // );
               },
               child: ListViewCardWidget(
                 imagePath: 'assets/images/bcuFB.png', // Image for content item

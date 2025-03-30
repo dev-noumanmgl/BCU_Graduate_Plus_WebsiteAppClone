@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/views/graduateWeekEventDetailScreen.dart';
+import 'package:graduate_plus_app/widgets/eventsListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 
 class GraduateWeekEventsScreenView extends StatelessWidget {
@@ -65,35 +67,12 @@ class GraduateWeekEventsScreenView extends StatelessWidget {
             SizedBox(height: 16.0),
 
             // List of Events
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 4, // Adjust number of events
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => GraduateWeekEventDetailScreenView(),
-                      ),
-                    );
-                  },
-                  child: ListViewCardWidget(
-                    imagePath: 'assets/images/bcuFB.png',
-                    title:
-                        index % 2 == 0
-                            ? 'Question sets and reports for students'
-                            : 'Give feedback - it only takes 2 minutes',
-                    likes: 213,
-                    isBookmark: true,
-                    isLiked: true,
-                    description:
-                        'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                  ),
-                );
-              },
+            EventsListViewCardWidgets(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: '',
+              postedDate: '',
+              events: DataService.fetchSingleIntroEvent(),
             ),
             SizedBox(height: 16.0),
 
@@ -102,13 +81,25 @@ class GraduateWeekEventsScreenView extends StatelessWidget {
               "Suggested Graduate+ Week Events by Course",
               "Arts, Design, and Media Courses",
             ),
-            _buildGridView(context),
+            EventsListViewCardWidgets(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'detail',
+              postedDate: '',
+              events: DataService.fetchArtEvents(),
+            ),
 
             SizedBox(height: 24.0),
 
             // Suggested Events by Area of Development Section
             _buildSectionTitle("", "Business, Law and Social Sciences Courses"),
-            _buildGridView(context),
+            EventsListViewCardWidgets(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'detail',
+              postedDate: '',
+              events: DataService.fetchArtEvents(),
+            ),
           ],
         ),
       ),
@@ -143,29 +134,6 @@ class GraduateWeekEventsScreenView extends StatelessWidget {
             ),
         SizedBox(height: 4),
       ],
-    );
-  }
-
-  // Helper function to build a grid view for events
-  Widget _buildGridView(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: 4,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return ListViewCardWidget(
-          imagePath: 'assets/images/bcuFB.png',
-          title:
-              index % 2 == 0
-                  ? 'Question sets and reports for students'
-                  : 'Give feedback - it only takes 2 minutes',
-          likes: 213,
-          isBookmark: true,
-          isLiked: true,
-          description:
-              'Some of the most vivid and effective descriptive writing in music can be found in rap',
-        );
-      },
     );
   }
 }

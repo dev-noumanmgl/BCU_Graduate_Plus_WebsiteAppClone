@@ -1,15 +1,21 @@
 // Import necessary Flutter packages for UI components
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart'; // Provides iOS-style widgets
 import 'package:flutter/material.dart'; // Core Flutter UI components
 
 // Import custom utilities for colors, text styles, and widgets
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/models/courseModel.dart';
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/courseFeedbackDetailScreenView.dart';
+import 'package:graduate_plus_app/widgets/coursesListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart'; // Custom widget for displaying grid items
 
 // Main screen for the RBS Discovery Tool, which presents a categorized list of digital resources
 class Coursedetailsscreenview extends StatelessWidget {
+  final CoursesModel courses;
+  const Coursedetailsscreenview({super.key, required this.courses});
   @override
   Widget build(BuildContext context) {
     final size =
@@ -55,17 +61,22 @@ class Coursedetailsscreenview extends StatelessWidget {
                   borderRadius: BorderRadius.circular(
                     12.0,
                   ), // Rounded corners for aesthetics
-                  child: Image.asset(
-                    'assets/images/bcuBanner.png', // Replace with header image
+                  child: CachedNetworkImage(
+                    imageUrl: courses.image,
+                    height: 79,
                     width: double.infinity,
-                    fit: BoxFit.cover, // Ensures the image covers the width
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            CupertinoActivityIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
               ),
               SizedBox(height: 16.0), // Add spacing below the banner
               // Title Section - Displays the main heading of the page
               Text(
-                'Freelancers\' Fair 2024', // Page title
+                courses.title, // Page title
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8), // Space between title and profile section
@@ -101,7 +112,7 @@ class Coursedetailsscreenview extends StatelessWidget {
                       ),
                       SizedBox(width: 8), // Space between image and text
                       Text(
-                        "Jisc", // Author/Organization name
+                        courses.publiserName, // Author/Organization name
                         style: textStyleBold(blackColor),
                       ),
                     ],
@@ -113,18 +124,18 @@ class Coursedetailsscreenview extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
-                        CupertinoIcons.heart_fill,
+                        CupertinoIcons.heart,
                         size: 22.0,
-                        color: appThemeColor,
+                        color: blackColor,
                       ), // Like icon
                       SizedBox(width: 4.0),
-                      Text('592'), // Like count
+                      Text(courses.like.toString()), // Like count
 
                       SizedBox(width: 16.0),
                       Icon(
-                        CupertinoIcons.bookmark_fill,
+                        CupertinoIcons.bookmark,
                         size: 18.0,
-                        color: appThemeColor,
+                        color: blackColor,
                       ), // Bookmark icon
 
                       SizedBox(width: 16.0),
@@ -147,41 +158,17 @@ class Coursedetailsscreenview extends StatelessWidget {
               SizedBox(height: 16.0), // Space below the profile section
               // Description Section - Provides an overview of the available resources
               Text(
-                'The Freelancers\' Fair happens during Grad+ Week (Week 7). It provides a week-long series of activities that help students with employability. We invite alumni who are working in the industry, and industry specialists to provide advice and workshops mainly for students who are studying film (or \'screen’ production – VFX students).\n This playlist includes all the activities that you could do as part of this week.',
+                courses.description.join("\n\n"),
                 style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
               ),
               SizedBox(height: 16.0), // Space before listing sections
 
-              ListView.builder(
-                shrinkWrap: true, // Ensures it fits within the scroll view
-                itemCount: 4, // Number of items
-                physics:
-                    NeverScrollableScrollPhysics(), // Disables inner scrolling
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => Coursefeedbackdetailscreenview(),
-                        ),
-                      );
-                    },
-                    child: ListViewCardWidget(
-                      imagePath: 'assets/images/bcuFB.png',
-                      title:
-                          index % 2 == 0
-                              ? 'Question sets and reports for students'
-                              : 'Give feedback - it only takes 2 minutes',
-                      likes: 213,
-                      isBookmark: true,
-                      isLiked: true,
-                      description:
-                          'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                    ),
-                  );
-                },
+              CoursesListViewCardWidget(
+                hasLogo: true,
+                postedBy: '',
+                nextScreen: 'courseFeedback',
+                postedDate: '',
+                futureCourses: DataService.fetchCourses(),
               ),
             ],
           ),

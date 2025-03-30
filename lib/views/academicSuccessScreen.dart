@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
+import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/views/graduateWeekEventDetailScreen.dart';
+import 'package:graduate_plus_app/widgets/coursesListViewCardWidget.dart';
 import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 
 class AcademicSuccessScreenView extends StatelessWidget {
@@ -87,35 +89,12 @@ class AcademicSuccessScreenView extends StatelessWidget {
             SizedBox(height: 16),
 
             // List of additional learning resources
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 4,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => GraduateWeekEventDetailScreenView(),
-                      ),
-                    );
-                  },
-                  child: ListViewCardWidget(
-                    imagePath: 'assets/images/bcuFB.png',
-                    title:
-                        index % 2 == 0
-                            ? 'Question sets and reports for students'
-                            : 'Give feedback - it only takes 2 minutes',
-                    likes: 213,
-                    isBookmark: true,
-                    isLiked: true,
-                    description:
-                        'Some of the most vivid and effective descriptive writing in music can be found in rap',
-                  ),
-                );
-              },
+            CoursesListViewCardWidget(
+              hasLogo: true,
+              postedBy: '',
+              nextScreen: 'course',
+              postedDate: '',
+              futureCourses: DataService.fetchCourses(),
             ),
             SizedBox(height: 16),
 

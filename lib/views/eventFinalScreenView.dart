@@ -2,14 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/models/eventsModel.dart';
-import 'package:graduate_plus_app/utilities/services/dataService.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
-import 'package:graduate_plus_app/widgets/eventsListViewCardWidget.dart';
-import 'package:graduate_plus_app/widgets/listViewCardWidget.dart';
 
-class Graduateeventdetailscreenview extends StatelessWidget {
+class EventsFinalDetailScreenView extends StatelessWidget {
   final EventsModel event;
-  const Graduateeventdetailscreenview({super.key, required this.event});
+  const EventsFinalDetailScreenView({super.key, required this.event});
   @override
   Widget build(BuildContext context) {
     final double screenWidth =
@@ -19,26 +16,23 @@ class Graduateeventdetailscreenview extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClipOval(
-            child: Container(
-              height: 44,
-              width: 44,
-              color: blackColor.withOpacity(.7),
-              child: Center(
-                child: Icon(Icons.arrow_back_rounded, color: whiteColor),
-              ),
-            ),
-          ),
+        elevation: 0, // Removes shadow under AppBar
+        leading: IconButton(
+          icon: Icon(
+            CupertinoIcons.back,
+            color: blackColor,
+          ), // Back button icon
+          onPressed: () {
+            Navigator.of(context).pop(); // Navigate back to the previous screen
+          },
         ),
         titleSpacing: 0,
-        title: Image.asset('assets/images/bcuLogo.png', height: 60.0),
+        title: Image.asset(
+          'assets/images/bcuLogo.png',
+          height: 40.0, // Logo size in the app bar
+        ),
       ),
-
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -83,11 +77,7 @@ class Graduateeventdetailscreenview extends StatelessWidget {
                 // Interaction Buttons (Like, Save, Download, Share)
                 Row(
                   children: [
-                    Icon(
-                      CupertinoIcons.heart_fill,
-                      size: 22.0,
-                      color: blackColor,
-                    ),
+                    Icon(CupertinoIcons.heart, size: 22.0, color: blackColor),
                     SizedBox(width: 4.0),
                     Text(event.like.toString()),
                     SizedBox(width: 16.0),
@@ -112,15 +102,6 @@ class Graduateeventdetailscreenview extends StatelessWidget {
             Text(
               event.description.join("\n"),
               style: TextStyle(fontSize: 16.0, color: Colors.black87),
-            ),
-            SizedBox(height: 16.0),
-
-            EventsListViewCardWidgets(
-              hasLogo: true,
-              postedBy: '',
-              nextScreen: 'finalDetails',
-              postedDate: '',
-              events: DataService.fetchGraduateEvents(),
             ),
           ],
         ),

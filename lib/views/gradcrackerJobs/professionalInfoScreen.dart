@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:graduate_plus_app/sharedPreference/sharedPreferenceHelper.dart';
+import 'package:graduate_plus_app/sharedPreference/sharedPreferenceforJobSection.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/commonButton.dart';
 import 'package:graduate_plus_app/utilities/customTextField.dart';
@@ -27,6 +29,7 @@ class _ProfessionalInfoScreenViewState
   @override
   void initState() {
     super.initState();
+    _loadSavedData();
     jobController.addListener(() {
       if (jobError != null && jobController.text.isNotEmpty) {
         setState(() {
@@ -43,7 +46,15 @@ class _ProfessionalInfoScreenViewState
     });
   }
 
-  Future<void> signIn() async {
+  // Load saved data from SharedPreferences
+  void _loadSavedData() async {
+    // You can load saved job and experience info from SharedPreferences here
+    jobController.text = await SharedPreferenceHelper.getJob() ?? '';
+    experienceController.text =
+        await SharedPreferenceHelper.getExperience() ?? '';
+  }
+
+  Future<void> saveProfessionalInfo() async {
     setState(() {
       jobError = jobController.text.trim().isEmpty ? "Required field" : null;
       experienceError =
@@ -53,7 +64,17 @@ class _ProfessionalInfoScreenViewState
     if (_formKey.currentState!.validate() &&
         jobError == null &&
         experienceError == null) {
-      try {} on FirebaseAuthException catch (e) {}
+      // Save to SharedPreferences when valid
+      await SharedPreferenceHelper.saveProfessionalInfo(
+        jobTitle: jobController.text.trim(),
+        experience: experienceController.text.trim(),
+      );
+
+      // Navigate to the next screen (Gradcracker Jobs)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => GradcrackerJobsScreen()),
+      );
     }
   }
 
@@ -108,7 +129,7 @@ class _ProfessionalInfoScreenViewState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Email Input Field
+                        // Job Title Input Field
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Job Title", style: textStyleRegular()),
@@ -123,7 +144,7 @@ class _ProfessionalInfoScreenViewState
                         ),
                         SizedBox(height: 20.0),
 
-                        // Password Input Field
+                        // Work Experience Input Field
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -146,20 +167,14 @@ class _ProfessionalInfoScreenViewState
               ),
             ),
 
-            // Login Button
+            // "Next" Button
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: GestureDetector(
                     onTap: () {
-                      // signIn();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GradcrackerJobsScreen(),
-                        ),
-                      );
+                      saveProfessionalInfo(); // Save and move to next screen
                     },
                     child: commonButton(context: context, label: "Next"),
                   ),

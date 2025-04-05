@@ -1,17 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:graduate_plus_app/firebaseDatabase/getStudentInfo.dart';
 import 'package:graduate_plus_app/sharedPreference/sharedPreferenceHelper.dart';
+import 'package:graduate_plus_app/sharedPreference/sharedPreferenceforJobSection.dart';
 import 'package:graduate_plus_app/utilities/appColors.dart';
 import 'package:graduate_plus_app/utilities/commonButton.dart';
 import 'package:graduate_plus_app/utilities/customTextField.dart';
-import 'package:graduate_plus_app/utilities/models/studentPrsnlInfoModel.dart';
 import 'package:graduate_plus_app/utilities/textStyles.dart';
 import 'package:graduate_plus_app/views/gradcrackerJobs/professionalInfoScreen.dart';
-import 'package:graduate_plus_app/views/homePageScreen.dart';
-import 'package:graduate_plus_app/views/signUpScreen.dart';
-import 'package:graduate_plus_app/widgets/changePasswordModelBottomSheet.dart';
 
 class PersonalInfoScreenView extends StatefulWidget {
   const PersonalInfoScreenView({Key? key}) : super(key: key);
@@ -35,6 +31,7 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
   @override
   void initState() {
     super.initState();
+    _loadSavedData();
     emailController.addListener(() {
       if (emailError != null && emailController.text.isNotEmpty) {
         setState(() {
@@ -56,6 +53,13 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
         });
       }
     });
+  }
+
+  // Load saved data from SharedPreferences
+  void _loadSavedData() async {
+    nameController.text = await SharedPreferenceHelper.getName() ?? '';
+    emailController.text = await SharedPreferenceHelper.getEmail() ?? '';
+    locationController.text = await SharedPreferenceHelper.getLocation() ?? '';
   }
 
   Future<void> signIn() async {
@@ -82,7 +86,18 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
         emailError == null &&
         nameError == null &&
         locationError == null) {
-      try {} on FirebaseAuthException catch (e) {}
+      // Save to SharedPreferences when valid
+      await SharedPreferenceHelper.savePersonalInfo(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        location: locationController.text.trim(),
+      );
+
+      // Navigate to the next screen (Professional Info)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfessionalInfoScreenView()),
+      );
     }
   }
 
@@ -137,7 +152,7 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Email Input Field
+                        // Full Name Input Field
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Full Name", style: textStyleRegular()),
@@ -152,7 +167,7 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
                         ),
                         SizedBox(height: 20.0),
 
-                        // Password Input Field
+                        // Email Input Field
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Email", style: textStyleRegular()),
@@ -168,7 +183,7 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
 
                         SizedBox(height: 20.0),
 
-                        // Password Input Field
+                        // Location Input Field
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Location", style: textStyleRegular()),
@@ -177,7 +192,7 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
                         CustomTextField(
                           controller: locationController,
                           hintText: 'Location...',
-                          prefixIcon: Icons.mail_outline_outlined,
+                          prefixIcon: Icons.location_on_outlined,
                           errorText: locationError,
                           isEmail: true,
                         ),
@@ -188,20 +203,14 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
               ),
             ),
 
-            // Login Button
+            // "Next" Button
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: GestureDetector(
                     onTap: () {
-                      // signIn();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfessionalInfoScreenView(),
-                        ),
-                      );
+                      signIn(); // Call the signIn function
                     },
                     child: commonButton(context: context, label: "Next"),
                   ),
